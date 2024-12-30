@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers(); 
-builder.Services.AddSingleton<ToDoService>(); 
+// builder.Services.AddSingleton<ToDoService>(); 
+builder.Services.AddScoped<ToDoService>(); 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
