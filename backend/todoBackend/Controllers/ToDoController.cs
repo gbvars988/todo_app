@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("todo")]
-
 public class ToDoController : ControllerBase
 {
 
