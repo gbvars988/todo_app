@@ -1,0 +1,23 @@
+# Ignore build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDE files
+.vs/
+
+# Logs
+*.log
+
+# Rider and VS Code specific
+.idea/
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
