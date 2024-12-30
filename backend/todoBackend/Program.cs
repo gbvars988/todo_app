@@ -2,16 +2,28 @@
 
 using Microsoft.EntityFrameworkCore;
 
+var MyAllowAllOrigins = "_myAllowAllOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();
 // builder.Services.AddSingleton<ToDoService>(); 
-builder.Services.AddScoped<ToDoService>(); 
+builder.Services.AddScoped<ToDoService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowAllOrigins,
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                      });
+});
 
 var app = builder.Build();
 
@@ -22,6 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(MyAllowAllOrigins);
 app.MapControllers();
 
 
