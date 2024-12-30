@@ -16,8 +16,8 @@ obj/
 
 # Rider and VS Code specific
 .idea/
-.vscode/
-
-# NuGet
+.vscode/    56 NuGet
 *.nupkg
 *.snupkg
+
+appsettings.Development.json
