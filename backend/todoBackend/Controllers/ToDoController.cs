@@ -9,7 +9,7 @@ public class ToDoController : ControllerBase
 
     public ToDoController(ToDoService toDoService)
     {
-        _toDoService = toDoService; 
+        _toDoService = toDoService;
     }
     // [HttpPost("add")]
     // public IActionResult AddToDo([FromBody] ToDoRequest request) 
@@ -30,8 +30,8 @@ public class ToDoController : ControllerBase
         {
             return BadRequest("ToDo Title cannot be null or empty");
         }
-        await _toDoService.AddToDo(req.Title, req.Body);
-        return Ok($"Successfully added ToDo {req.Title}"); 
+        var todo = await _toDoService.AddToDo(req.Title, req.Body);
+        return Ok(todo);
     }
 
     // [HttpGet("get")]
@@ -61,8 +61,11 @@ public class ToDoController : ControllerBase
     // }
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteToDo(int id)
-    {   
-        bool success = _toDoService.DeleteToDo(id).Result; 
+    {
+        bool success = await _toDoService.DeleteToDo(id); //await is needed to unwrap
+                                                          // Task object. Otherwise, if no await,
+                                                          // then must use .Result (this blocks the thread
+                                                          //  and may introduce deadlock)
         if (success) return Ok($"Successfully deleted ToDo with id {id}");
         return NotFound($"Could not find ToDo with id {id}");
     }
@@ -77,7 +80,7 @@ public class ToDoController : ControllerBase
     [HttpPut("update/{id}")]
     public async Task<IActionResult> UpdateToDo(int id, [FromBody] ToDoRequest req)
     {
-        bool success = _toDoService.UpdateToDo(id, req.Title).Result;
+        bool success = await _toDoService.UpdateToDo(id, req.Title);
         if (success) return Ok($"Successfully updated ToDo with id {id}");
         return NotFound($"Could not find ToDo with id {id}");
     }

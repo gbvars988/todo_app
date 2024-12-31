@@ -9,7 +9,7 @@ public class ToDoService
 
     public ToDoService(AppDbContext context)
     {
-        _context = context; 
+        _context = context;
     }
 
     // public void AddToDo(string title, string body)
@@ -18,14 +18,16 @@ public class ToDoService
     //     _todos.Add(title);
     // }
 
-    public async Task AddToDo(string title, string ?body)
+    public async Task<ToDo> AddToDo(string title, string? body)
     {
-        var todo = new ToDo { 
+        var todo = new ToDo
+        {
             Title = title,
-            Body = body 
-            };
+            Body = body
+        };
         _context.ToDos.Add(todo);
-        await _context.SaveChangesAsync(); 
+        await _context.SaveChangesAsync();
+        return todo;
     }
 
     // public List<string> GetAllToDos()
@@ -36,7 +38,7 @@ public class ToDoService
     public async Task<List<ToDo>> GetAllToDos()
     {
         var result = await _context.ToDos.ToListAsync();
-        return result; 
+        return result;
     }
 
     // public bool DeleteToDo(int index)
@@ -57,7 +59,7 @@ public class ToDoService
 
         _context.ToDos.Remove(todo);
         await _context.SaveChangesAsync();
-        return true; 
+        return true;
     }
 
     // public bool UpdateToDo(int index, string newTitle)
@@ -78,6 +80,6 @@ public class ToDoService
 
         todo.Title = newTitle;
         await _context.SaveChangesAsync();
-        return true; 
+        return true;
     }
 }
