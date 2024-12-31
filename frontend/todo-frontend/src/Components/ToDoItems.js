@@ -7,25 +7,34 @@ export default function ToDoItems() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getAllToDos();
+      const data = await getAllToDos(); // this line without await returns an unresolved
+      // promise into data, causing it to have typeof undefined (rather than an array of objects)
       console.log(data);
       setItems(data);
     };
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getAllToDos();
-      console.log(data);
-      setItems(data);
-    };
-    fetchData();
-  }, [items]);
+  // This useEffect causes an infinite loop, setItems will change [items] retriggering this
+  // useeffect again.
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       const data = await getAllToDos();
+  //       console.log(data);
+  //       setItems(data);
+  //     };
+  //     fetchData();
+  //   }, [items]);
 
   const handleDelete = async (id) => {
     console.log(`Delete todo with ID: ${id}`);
-    const data = await deleteToDo(id);
+    try {
+      await deleteToDo(id);
+      const data = await getAllToDos();
+      setItems(data);
+    } catch (e) {
+      console.error("Failed to delete To-Do", e);
+    }
   };
 
   return (
