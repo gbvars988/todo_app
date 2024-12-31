@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import { addToDo } from "../Data/respository";
+import ToDoItems from "./ToDoItems";
 
 export default function ToDolist() {
   const [todo, setTodo] = useState();
@@ -22,12 +23,16 @@ export default function ToDolist() {
     <div>
       <input
         name="todotitle"
+        type="text"
         id="todotitle"
         placeholder="Enter your todo..."
-        value="dumbo"
+        // value="dumbo"
         onChange={handleinput}
       />
       <button onClick={handleSubmit}>Create</button>
+      <div>
+        <ToDoItems></ToDoItems>
+      </div>
     </div>
   );
 }
