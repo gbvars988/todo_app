@@ -1,19 +1,18 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { getAllToDos, deleteToDo } from "../Data/respository";
+import { deleteToDo } from "../Data/respository";
 
-export default function ToDoItems() {
-  const [items, setItems] = useState([]);
+export default function ToDoItems({ items, setItems }) {
+  //   const [items, setItems] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getAllToDos(); // this line without await returns an unresolved
-      // promise into data, causing it to have typeof undefined (rather than an array of objects)
-      console.log(data);
-      setItems(data);
-    };
-    fetchData();
-  }, []);
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       const data = await getAllToDos(); // this line without await returns an unresolved
+  //       // promise into data, causing it to have typeof undefined (rather than an array of objects)
+  //       console.log(data);
+  //       setItems(data);
+  //     };
+  //     fetchData();
+  //   }, []);
 
   // This useEffect causes an infinite loop, setItems will change [items] retriggering this
   // useeffect again.
@@ -30,8 +29,7 @@ export default function ToDoItems() {
     console.log(`Delete todo with ID: ${id}`);
     try {
       await deleteToDo(id);
-      const data = await getAllToDos();
-      setItems(data);
+      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
     } catch (e) {
       console.error("Failed to delete To-Do", e);
     }

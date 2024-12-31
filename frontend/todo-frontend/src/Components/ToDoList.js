@@ -1,9 +1,21 @@
-import { React, useState } from "react";
-import { addToDo } from "../Data/respository";
+import { React, useState, useEffect } from "react";
+import { addToDo, getAllToDos } from "../Data/respository";
 import ToDoItems from "./ToDoItems";
 
 export default function ToDolist() {
   const [todo, setTodo] = useState();
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const data = await getAllToDos(); // this line without await returns an unresolved
+      // promise into data, causing it to have typeof undefined (rather than an array of objects)
+      if (data) {
+        setItems(data);
+      }
+    };
+    fetchItems();
+  }, []);
 
   const handleinput = (event) => {
     const todo = event.target.value;
@@ -16,8 +28,10 @@ export default function ToDolist() {
       title: todo,
       body: "",
     };
-
     const response = await addToDo(payload);
+    if (response) {
+      setItems((prevItems) => [...prevItems, response]);
+    }
   };
   return (
     <div>
@@ -31,7 +45,7 @@ export default function ToDolist() {
       />
       <button onClick={handleSubmit}>Create</button>
       <div>
-        <ToDoItems></ToDoItems>
+        <ToDoItems items={items} setItems={setItems}></ToDoItems>
       </div>
     </div>
   );
