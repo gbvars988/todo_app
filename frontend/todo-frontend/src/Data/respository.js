@@ -21,4 +21,9 @@ async function deleteToDo(id) {
   return response.data;
 }
 
-export { addToDo, getAllToDos, deleteToDo };
+async function updateToDo(id, newTitle) {
+  const response = await axios.put(API_HOST + `/todo/update/${id}`, newTitle);
+  return response.data;
+}
+
+export { addToDo, getAllToDos, deleteToDo, updateToDo };
