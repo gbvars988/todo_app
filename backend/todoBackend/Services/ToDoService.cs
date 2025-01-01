@@ -18,12 +18,13 @@ public class ToDoService
     //     _todos.Add(title);
     // }
 
-    public async Task<ToDo> AddToDo(string title, string? body)
+    public async Task<ToDo> AddToDo(string title, string? body, int userId)
     {
         var todo = new ToDo
         {
             Title = title,
-            Body = body
+            Body = body,
+            UserId = userId
         };
         _context.ToDos.Add(todo);
         await _context.SaveChangesAsync();
@@ -35,9 +36,9 @@ public class ToDoService
     //     return _todos; 
     // }
 
-    public async Task<List<ToDo>> GetAllToDos()
+    public async Task<List<ToDo>> GetAllToDos(int userId)
     {
-        var result = await _context.ToDos.ToListAsync();
+        var result = await _context.ToDos.Where(todo => todo.UserId == userId).ToListAsync();
         return result;
     }
 
@@ -52,10 +53,10 @@ public class ToDoService
     //     return true; 
     // }
 
-    public async Task<bool> DeleteToDo(int id)
+    public async Task<bool> DeleteToDo(int id, int userId)
     {
         var todo = await _context.ToDos.FindAsync(id);
-        if (todo == null) return false;
+        if (todo == null || todo.UserId != userId) return false;
 
         _context.ToDos.Remove(todo);
         await _context.SaveChangesAsync();

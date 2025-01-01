@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
+[Authorize]
 [ApiController]
 [Route("todo")]
 public class ToDoController : ControllerBase
@@ -30,7 +33,9 @@ public class ToDoController : ControllerBase
         {
             return BadRequest("ToDo Title cannot be null or empty");
         }
-        var todo = await _toDoService.AddToDo(req.Title, req.Body);
+
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        var todo = await _toDoService.AddToDo(req.Title, req.Body, userId);
         return Ok(todo);
     }
 
@@ -45,7 +50,8 @@ public class ToDoController : ControllerBase
     [HttpGet("get")]
     public async Task<IActionResult> GetAllToDos()
     {
-        var todos = await _toDoService.GetAllToDos();
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        var todos = await _toDoService.GetAllToDos(userId);
         return Ok(todos);
     }
 
@@ -62,12 +68,14 @@ public class ToDoController : ControllerBase
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteToDo(int id)
     {
-        bool success = await _toDoService.DeleteToDo(id); //await is needed to unwrap
-                                                          // Task object. Otherwise, if no await,
-                                                          // then must use .Result (this blocks the thread
-                                                          //  and may introduce deadlock)
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        bool success = await _toDoService.DeleteToDo(id, userId); //await is needed to unwrap
+                                                                  // Task object. Otherwise, if no await,
+                                                                  // then must use .Result ( but this blocks the thread
+                                                                  //  and may introduce deadlock)
         if (success) return Ok($"Successfully deleted ToDo with id {id}");
-        return NotFound($"Could not find ToDo with id {id}");
+        return NotFound($"ToDo with id {id} not found or does not belong to the user");
     }
 
     // [HttpPut("update/{index}")]
