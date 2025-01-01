@@ -26,4 +26,23 @@ async function updateToDo(id, newTitle) {
   return response.data;
 }
 
-export { addToDo, getAllToDos, deleteToDo, updateToDo };
+// ----- Auth
+
+async function RegisterUser(userDetails) {
+  const response = await axios.post(API_HOST + `/auth/register`, userDetails);
+  return response.data;
+}
+
+async function LoginUser(userDetails) {
+  const response = await axios.post(API_HOST + `/auth/login`, userDetails);
+  return response.data.token;
+}
+
+export {
+  addToDo,
+  getAllToDos,
+  deleteToDo,
+  updateToDo,
+  RegisterUser,
+  LoginUser,
+};
