@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseCors(MyAllowAllOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 // Configure the HTTP request pipeline.d
@@ -56,7 +57,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(MyAllowAllOrigins);
 app.MapControllers();
 
 
