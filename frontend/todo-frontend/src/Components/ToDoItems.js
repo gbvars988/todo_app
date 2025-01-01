@@ -56,32 +56,54 @@ export default function ToDoItems({ items, setItems }) {
   };
 
   return (
-    <div>
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            {editId === item.id ? (
-              <div>
-                <input
-                  type="text"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                />
-                <button onClick={handleUpdate}>Save</button>
-                <button onClick={() => setEditId(null)}>Cancel</button>
-              </div>
-            ) : (
-              <div>
-                {item.title}
-                <button onClick={() => handleEdit(item.id, item.title)}>
+    <ul className="space-y-4">
+      {items.map((item) => (
+        <li
+          key={item.id}
+          className="flex justify-between items-center bg-gray-50 border border-gray-300 p-4 rounded shadow-sm"
+        >
+          {editId === item.id ? (
+            <div className="flex items-center gap-2 w-full">
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="flex-grow border border-gray-300 rounded px-4 py-2 focus:ring focus:ring-blue-200"
+              />
+              <button
+                onClick={handleUpdate}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditId(null)}
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div className="flex justify-between items-center w-full">
+              <span className="text-gray-800">{item.title}</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleEdit(item.id, item.title)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                >
                   Edit
                 </button>
-                <button onClick={() => handleDelete(item.id)}>Delete</button>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                >
+                  Delete
+                </button>
               </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
   );
 }
