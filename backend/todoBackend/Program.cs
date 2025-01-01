@@ -14,12 +14,14 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 // builder.Services.AddSingleton<ToDoService>(); 
 builder.Services.AddScoped<ToDoService>();
-// builder.Services.AddDbContext<AppDbContext>(options =>
-//     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Environment Variable will override appsettings.json
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(Environment.GetEnvironmentVariable("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// builder.Services.AddDbContext<AppDbContext>(options =>
+//     options.UseNpgsql(Environment.GetEnvironmentVariable("DefaultConnection")
+//     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found")));
 
 
 builder.Services.AddCors(options =>
