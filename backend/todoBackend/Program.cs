@@ -1,6 +1,9 @@
 
 
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var MyAllowAllOrigins = "_myAllowAllOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +28,22 @@ builder.Services.AddCors(options =>
                       });
 });
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ASuperSecretKey123123123"))
+        };
+    });
+
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
 // Configure the HTTP request pipeline.d
 if (app.Environment.IsDevelopment())
 {
