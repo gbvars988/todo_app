@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes("ASuperSecretKey123123123");
+        var key = Encoding.UTF8.GetBytes("ASuperSecretKey123123123123123123");
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
