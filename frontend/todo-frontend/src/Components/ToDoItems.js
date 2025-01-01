@@ -1,109 +1,91 @@
 import React, { useState } from "react";
 import { deleteToDo, updateToDo } from "../Data/respository";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ToDoItems({ items, setItems }) {
-  const [editId, setEditId] = useState(null); // Tracks the todo being updated
-  const [editTitle, setEditTitle] = useState(""); // Store the new todo 'title'
-  //   const [items, setItems] = useState([]);
-
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       const data = await getAllToDos(); // this line without await returns an unresolved
-  //       // promise into data, causing it to have typeof undefined (rather than an array of objects)
-  //       console.log(data);
-  //       setItems(data);
-  //     };
-  //     fetchData();
-  //   }, []);
-
-  // This useEffect causes an infinite loop, setItems will change [items] retriggering this
-  // useeffect again.
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       const data = await getAllToDos();
-  //       console.log(data);
-  //       setItems(data);
-  //     };
-  //     fetchData();
-  //   }, [items]);
+  const [editId, setEditId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
 
   const handleDelete = async (id) => {
-    console.log(`Delete todo with ID: ${id}`);
-    try {
-      await deleteToDo(id);
-      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    } catch (e) {
-      console.error("Failed to delete To-Do", e);
-    }
-  };
-
-  const handleEdit = (id, currentTitle) => {
-    setEditId(id);
-    setEditTitle(currentTitle);
+    await deleteToDo(id);
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
   const handleUpdate = async () => {
     const payload = { title: editTitle, body: "" };
-    const success = await updateToDo(editId, payload);
-    if (success) {
-      setItems((prevItems) =>
-        prevItems.map((item) =>
-          item.id === editId ? { ...item, title: editTitle } : item
-        )
-      );
-      setEditId(null);
-    }
+    await updateToDo(editId, payload);
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === editId ? { ...item, title: editTitle } : item
+      )
+    );
+    setEditId(null);
   };
 
   return (
-    <ul className="space-y-4">
-      {items.map((item) => (
-        <li
-          key={item.id}
-          className="flex justify-between items-center bg-gray-50 border border-gray-300 p-4 rounded shadow-sm"
-        >
-          {editId === item.id ? (
-            <div className="flex items-center gap-2 w-full">
+    <div className="space-y-4">
+      <AnimatePresence>
+        {items.map((item) => (
+          <motion.div
+            key={item.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="p-4 bg-gradient-to-br from-white via-indigo-50 to-indigo-100 rounded-lg shadow-lg flex justify-between items-center hover:shadow-2xl transition-shadow"
+          >
+            {editId === item.id ? (
               <input
                 type="text"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="flex-grow border border-gray-300 rounded px-4 py-2 focus:ring focus:ring-blue-200"
+                className="flex-grow mr-4 p-3 border border-indigo-300 rounded-full focus:ring-4 focus:ring-indigo-400"
               />
-              <button
-                onClick={handleUpdate}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-              >
-                Save
-              </button>
-              <button
-                onClick={() => setEditId(null)}
-                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
+            ) : (
+              <span className="text-lg font-medium text-gray-800">
+                {item.title}
+              </span>
+            )}
+
+            <div className="flex gap-3">
+              {editId === item.id ? (
+                <>
+                  <button
+                    onClick={handleUpdate}
+                    className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transform transition-all duration-300"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditId(null)}
+                    className="bg-gray-300 text-gray-800 py-2 px-4 rounded-full hover:bg-gray-400 transform transition-all duration-300"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      setEditId(item.id);
+                      setEditTitle(item.title);
+                    }}
+                    className="bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transform transition-all duration-300"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transform transition-all duration-300"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
             </div>
-          ) : (
-            <div className="flex justify-between items-center w-full">
-              <span className="text-gray-800">{item.title}</span>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEdit(item.id, item.title)}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          )}
-        </li>
-      ))}
-    </ul>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
   );
 }
