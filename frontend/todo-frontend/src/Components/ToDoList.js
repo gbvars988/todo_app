@@ -1,10 +1,14 @@
 import { React, useState, useEffect } from "react";
 import { addToDo, getAllToDos } from "../Data/respository";
 import ToDoItems from "./ToDoItems";
+import { useAuth } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ToDolist() {
   const [todo, setTodo] = useState();
   const [items, setItems] = useState([]);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -16,6 +20,11 @@ export default function ToDolist() {
     };
     fetchItems();
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const handleinput = (event) => {
     const todo = event.target.value;
@@ -35,6 +44,7 @@ export default function ToDolist() {
   };
   return (
     <div>
+      <button onClick={handleLogout}>Logout</button>
       <input
         name="todotitle"
         type="text"
