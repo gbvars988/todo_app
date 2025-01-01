@@ -2,6 +2,19 @@ import axios from "axios";
 
 const API_HOST = "http://localhost:5140";
 
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 async function addToDo(todo) {
   const response = await axios.post(API_HOST + "/todo/add", todo);
   // headers: {
@@ -30,7 +43,7 @@ async function updateToDo(id, newTitle) {
 
 async function RegisterUser(userDetails) {
   const response = await axios.post(API_HOST + `/auth/register`, userDetails);
-  return response.data;
+  return response;
 }
 
 async function LoginUser(userDetails) {
