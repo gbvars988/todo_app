@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_HOST = "https://todo-app-backend-l4f0.onrender.com";
-// const API_HOST = "http://localhost:5140";
+// const API_HOST = "https://todo-app-backend-l4f0.onrender.com";
+const API_HOST = "http://localhost:5140";
 
 axios.interceptors.request.use(
   (config) => {
@@ -40,6 +40,14 @@ async function updateToDo(id, newTitle) {
   return response.data;
 }
 
+async function updateStatus(id, newStatus) {
+  const response = await axios.put(
+    API_HOST + `/todo/changestatus/${id}`,
+    newStatus
+  );
+  return response;
+}
+
 // ----- Auth
 
 async function RegisterUser(userDetails) {
@@ -59,4 +67,5 @@ export {
   updateToDo,
   RegisterUser,
   LoginUser,
+  updateStatus,
 };
