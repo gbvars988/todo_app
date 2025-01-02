@@ -15,13 +15,13 @@ builder.Services.AddControllers();
 // builder.Services.AddSingleton<ToDoService>(); 
 builder.Services.AddScoped<ToDoService>();
 // For local dev
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// builder.Services.AddDbContext<AppDbContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Production DB
-// builder.Services.AddDbContext<AppDbContext>(options =>
-// options.UseNpgsql(Environment.GetEnvironmentVariable("DefaultConnection")
-// ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found")));
+builder.Services.AddDbContext<AppDbContext>(options =>
+options.UseNpgsql(Environment.GetEnvironmentVariable("DefaultConnection")
+?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found")));
 
 
 builder.Services.AddCors(options =>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const API_HOST = "https://todo-app-backend-l4f0.onrender.com";
-const API_HOST = "http://localhost:5140";
+const API_HOST = "https://todo-app-backend-l4f0.onrender.com";
+// const API_HOST = "http://localhost:5140";
 
 axios.interceptors.request.use(
   (config) => {
