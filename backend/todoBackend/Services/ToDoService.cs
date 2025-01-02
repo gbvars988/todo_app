@@ -83,4 +83,14 @@ public class ToDoService
         await _context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> ChangeToDoStatus(int id, string newStatus)
+    {
+        var todo = await _context.ToDos.FindAsync(id);
+        if (todo == null) return false;
+
+        todo.Status = newStatus;
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

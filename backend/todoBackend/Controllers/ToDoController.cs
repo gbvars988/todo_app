@@ -9,6 +9,7 @@ public class ToDoController : ControllerBase
 {
 
     private readonly ToDoService _toDoService;
+    private readonly HashSet<string> allowedStatus = new() { "todo", "doing", "done" };
 
     public ToDoController(ToDoService toDoService)
     {
@@ -91,5 +92,18 @@ public class ToDoController : ControllerBase
         bool success = await _toDoService.UpdateToDo(id, req.Title);
         if (success) return Ok($"Successfully updated ToDo with id {id}");
         return NotFound($"Could not find ToDo with id {id}");
+    }
+
+    [HttpPut("changestatus/{id}")]
+    public async Task<IActionResult> ChangeStatus(int id, [FromBody] ToDoStatusRequest req)
+    {
+        Console.WriteLine("in controller method");
+        if (!allowedStatus.Contains(req.NewStatus))
+        {
+            return BadRequest($"Status \"{req.NewStatus}\" not allowed");
+        }
+        bool success = await _toDoService.ChangeToDoStatus(id, req.NewStatus);
+
+        return success ? Ok("Updated todo status") : NotFound($"Could not update the status for todo with id {id}");
     }
 }
