@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { addToDo, getAllToDos } from "../Data/respository";
+import {
+  addToDo,
+  getAllToDos,
+  updateStatus,
+  deleteToDo,
+  updateToDo,
+} from "../Data/respository";
 import ToDoItems from "./ToDoItems";
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +40,42 @@ export default function ToDoList() {
     }
   };
 
+  const handleDrop = async (id, newStatus) => {
+    try {
+      await updateStatus(id, { newStatus });
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === id ? { ...item, status: newStatus } : item
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteToDo(id);
+      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Failed to delete item", error);
+    }
+  };
+
+  const handleEdit = async (id, newTitle) => {
+    try {
+      const payload = { title: newTitle, body: "" };
+      await updateToDo(id, payload);
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === id ? { ...item, title: newTitle } : item
+        )
+      );
+    } catch (error) {
+      console.error("Failed to edit item", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-100 via-white to-indigo-200">
       <header className="w-full flex justify-between items-center p-6 bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg sticky top-0 z-10">
@@ -65,7 +107,13 @@ export default function ToDoList() {
           </button>
         </div>
         <div className="w-full max-w-4xl">
-          <ToDoItems items={items} setItems={setItems} />
+          <ToDoItems
+            items={items}
+            setItems={setItems}
+            onDrop={handleDrop}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
         </div>
       </main>
     </div>
